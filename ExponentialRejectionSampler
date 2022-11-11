@@ -1,0 +1,28 @@
+set.seed(2022)                       
+mc = 1000000                         # number of candidates
+
+x = runif(mc, 0 , 100)               # Here the x value has a maximum of 100
+y = runif(mc, 0, 2*exp(1)-1)
+exponentialsample = x[y < (exp(-x-1)+(exp(1)-1)*exp(-exp(1)*x))]        # accepted candidates
+length(exponentialsample) # samples accepted
+hist(exponentialsample, prob=T, col="blue")
+curve(exp(-x-1) + (exp(1)-1)*exp(-exp(1)*x), 0, 7, add=T, col="red")
+
+#This is an importance sample with the proposal function 2*exp(-x)
+
+fx<-function(x){
+  return(exp(-x+1)+(exp(1)-1)*exp(-exp(1)*x))
+}
+gx<-function(x){
+  return(2*exp(-x))
+}
+
+y <- exponentialsample[ exponentialsample> 2 &  exponentialsample<3]  #Take s from previous code example for the sampling distribution
+prob1 = length(y)/length(exponentialsample)
+prob1    # This is the probability of being betwen 2 and 3 for the importance sampler
+
+mean1= mean(exponentialsample*fx(exponentialsample)/gx(exponentialsample))
+mean1  #This is the mean of the importance sampler
+
+variance = mean(exponentialsample^2*fx(exponentialsample)/gx(exponentialsample)-exponentialsample*fx(exponentialsample)/gx(exponentialsample))
+variance  #This is the variance of the importance sampler
